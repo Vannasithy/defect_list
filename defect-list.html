@@ -1,0 +1,719 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Defect List – LHB Construction</title>
+<link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans:wght@400;500;600&family=IBM+Plex+Mono:wght@400;500&display=swap" rel="stylesheet">
+<style>
+:root {
+  --ink: #1a1a1a;
+  --ink-2: #444;
+  --ink-3: #888;
+  --line: #ccc;
+  --line-light: #e8e8e8;
+  --bg: #f0ede8;
+  --surface: #fff;
+  --accent: #c0392b;
+  --accent-light: #fdf0ef;
+  --header-bg: #1a1a1a;
+  --badge: #e8e4dc;
+  --radius: 6px;
+  --shadow: 0 2px 12px rgba(0,0,0,0.10), 0 1px 3px rgba(0,0,0,0.08);
+}
+* { box-sizing: border-box; margin: 0; padding: 0; }
+body {
+  font-family: 'IBM Plex Sans', sans-serif;
+  background: var(--bg);
+  color: var(--ink);
+  min-height: 100vh;
+}
+
+/* ── APP SHELL ─────────────────────────────────── */
+.app-bar {
+  background: var(--header-bg);
+  color: #fff;
+  padding: 0 20px;
+  height: 56px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  position: sticky;
+  top: 0;
+  z-index: 100;
+  gap: 12px;
+}
+.app-bar-brand {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+.app-bar-logo {
+  width: 30px; height: 30px;
+  background: var(--accent);
+  border-radius: 4px;
+  display: flex; align-items: center; justify-content: center;
+  font-weight: 600; font-size: 13px; letter-spacing: 0.5px;
+  flex-shrink: 0;
+}
+.app-bar-title { font-size: 15px; font-weight: 600; letter-spacing: 0.2px; }
+.app-bar-sub { font-size: 11px; color: #aaa; }
+.app-bar-actions { display: flex; gap: 8px; }
+.btn {
+  border: none; border-radius: var(--radius); cursor: pointer;
+  font-family: inherit; font-size: 13px; font-weight: 500;
+  padding: 7px 14px; transition: all 0.15s;
+  display: inline-flex; align-items: center; gap: 6px;
+}
+.btn-ghost { background: rgba(255,255,255,0.10); color: #fff; }
+.btn-ghost:hover { background: rgba(255,255,255,0.18); }
+.btn-accent { background: var(--accent); color: #fff; }
+.btn-accent:hover { background: #a93226; }
+.btn-outline { background: #fff; color: var(--ink); border: 1px solid var(--line); }
+.btn-outline:hover { background: #f5f5f5; }
+
+/* ── FORM PANEL ────────────────────────────────── */
+.panel {
+  background: var(--surface);
+  border-radius: 10px;
+  box-shadow: var(--shadow);
+  overflow: hidden;
+}
+.panel-header {
+  background: var(--accent);
+  color: #fff;
+  padding: 14px 20px;
+  font-size: 13px;
+  font-weight: 600;
+  letter-spacing: 0.5px;
+  text-transform: uppercase;
+  display: flex; align-items: center; gap: 8px;
+}
+.panel-body { padding: 20px; }
+.form-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+  gap: 14px;
+}
+.form-field { display: flex; flex-direction: column; gap: 5px; }
+.form-field label {
+  font-size: 11px; font-weight: 600; color: var(--ink-3);
+  text-transform: uppercase; letter-spacing: 0.6px;
+}
+.form-field input, .form-field select {
+  border: 1.5px solid var(--line);
+  border-radius: var(--radius);
+  padding: 8px 11px;
+  font-family: inherit; font-size: 14px; color: var(--ink);
+  background: #fff; transition: border-color 0.15s;
+  outline: none;
+}
+.form-field input:focus, .form-field select:focus {
+  border-color: var(--accent);
+}
+
+/* ── MAIN LAYOUT ───────────────────────────────── */
+.workspace { max-width: 1280px; margin: 0 auto; padding: 24px 20px; }
+.top-row { display: flex; gap: 16px; align-items: flex-start; margin-bottom: 24px; flex-wrap: wrap; }
+.top-row .panel { flex: 1 1 400px; }
+.counter-panel {
+  background: var(--surface);
+  border-radius: 10px;
+  box-shadow: var(--shadow);
+  padding: 16px 20px;
+  min-width: 200px;
+}
+.counter-label { font-size: 11px; font-weight: 600; color: var(--ink-3); text-transform: uppercase; letter-spacing: 0.6px; margin-bottom: 6px; }
+.counter-val { font-size: 36px; font-weight: 600; color: var(--accent); font-family: 'IBM Plex Mono', monospace; line-height: 1; }
+.counter-sub { font-size: 12px; color: var(--ink-3); margin-top: 4px; }
+.pages-label {
+  font-size: 12px; color: var(--ink-3); margin-top: 10px;
+  padding-top: 10px; border-top: 1px solid var(--line-light);
+}
+
+/* ── A4 PAGE ────────────────────────────────────── */
+.pages-container { display: flex; flex-direction: column; gap: 32px; }
+
+.a4-page {
+  background: var(--surface);
+  box-shadow: var(--shadow);
+  border-radius: 4px;
+  overflow: hidden;
+  position: relative;
+}
+
+/* A4: 210mm × 297mm. At 96dpi: 794 × 1123px */
+.a4-inner {
+  width: 100%;
+  padding: 14mm 12mm;
+  display: flex;
+  flex-direction: column;
+}
+.a4-inner .photo-grid { flex: 1; }
+.a4-inner .page-footer { flex-shrink: 0; margin-top: auto; padding-top: 10px; }
+
+.page-header {
+  border-bottom: 3px solid var(--header-bg);
+  padding-bottom: 10px;
+  margin-bottom: 14px;
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-end;
+  gap: 12px;
+}
+.page-header-left { flex: 1; }
+.company-name {
+  font-size: 10px; font-weight: 600; color: var(--ink-3);
+  text-transform: uppercase; letter-spacing: 1px; margin-bottom: 2px;
+}
+.doc-title {
+  font-size: 22px; font-weight: 600; color: var(--accent);
+  letter-spacing: -0.5px; line-height: 1;
+}
+.page-header-meta {
+  display: grid;
+  grid-template-columns: repeat(4, auto);
+  gap: 4px 18px;
+  font-size: 12px;
+  text-align: right;
+}
+.meta-label { color: var(--ink-3); font-size: 10px; font-weight: 600; text-transform: uppercase; letter-spacing: 0.5px; }
+.meta-val { color: var(--ink); font-weight: 500; }
+.page-badge {
+  background: var(--header-bg);
+  color: #fff;
+  font-size: 10px;
+  font-family: 'IBM Plex Mono', monospace;
+  padding: 3px 8px;
+  border-radius: 3px;
+  align-self: flex-start;
+}
+
+/* ── 6-SLOT GRID ──────────────────────────────── */
+.photo-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 10px;
+}
+
+.photo-slot {
+  border: 1.5px solid var(--line);
+  border-radius: 6px;
+  overflow: hidden;
+  background: #fafafa;
+  display: flex;
+  flex-direction: column;
+  min-height: 260px;
+}
+
+.slot-number {
+  background: var(--header-bg);
+  color: #fff;
+  font-size: 10px;
+  font-weight: 600;
+  font-family: 'IBM Plex Mono', monospace;
+  padding: 3px 8px;
+  letter-spacing: 0.5px;
+}
+
+.photo-area {
+  flex: 1;
+  min-height: 160px;
+  background: #f0ede8;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  position: relative;
+  overflow: hidden;
+  transition: background 0.15s;
+}
+.photo-area:hover { background: #e8e4dc; }
+.photo-area img {
+  width: 100%; height: 100%;
+  object-fit: cover;
+  display: none;
+  position: absolute; inset: 0;
+}
+.photo-area img.loaded { display: block; }
+.photo-placeholder {
+  display: flex; flex-direction: column; align-items: center; gap: 6px;
+  color: var(--ink-3); user-select: none; pointer-events: none;
+}
+.photo-placeholder svg { opacity: 0.5; }
+.photo-placeholder span { font-size: 11px; font-weight: 500; }
+.photo-clear {
+  position: absolute; top: 6px; right: 6px;
+  background: rgba(0,0,0,0.55); color: #fff;
+  border: none; border-radius: 50%;
+  width: 22px; height: 22px;
+  cursor: pointer; font-size: 14px; line-height: 22px; text-align: center;
+  display: none; z-index: 2;
+}
+.photo-area:has(img.loaded) .photo-clear { display: flex; align-items: center; justify-content: center; }
+.photo-area input[type=file] { display: none; }
+
+.slot-meta {
+  border-top: 1.5px solid var(--line);
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 0;
+}
+.slot-field {
+  padding: 6px 8px;
+  border-right: 1px solid var(--line-light);
+  display: flex; flex-direction: column; gap: 2px;
+}
+.slot-field:last-child { border-right: none; }
+.slot-field-label {
+  font-size: 9px; font-weight: 600; color: var(--ink-3);
+  text-transform: uppercase; letter-spacing: 0.5px;
+}
+.slot-field input, .slot-field select {
+  border: none; background: transparent;
+  font-family: inherit; font-size: 12px; color: var(--ink);
+  outline: none; padding: 0; width: 100%;
+}
+.slot-field input::placeholder { color: #ccc; }
+
+.slot-desc {
+  border-top: 1px solid var(--line-light);
+  padding: 6px 8px;
+  display: flex; flex-direction: column; gap: 2px;
+  grid-column: 1 / -1;
+}
+.slot-desc textarea {
+  border: none; background: transparent;
+  font-family: inherit; font-size: 12px; color: var(--ink);
+  outline: none; padding: 0; resize: none; width: 100%;
+  min-height: 38px;
+}
+.slot-desc textarea::placeholder { color: #ccc; }
+
+.slot-meta-full {
+  border-top: 1.5px solid var(--line);
+}
+
+/* ── PAGE FOOTER ──────────────────────────────── */
+.page-footer {
+  margin-top: 14px;
+  padding-top: 8px;
+  border-top: 1px solid var(--line-light);
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  font-size: 10px;
+  color: var(--ink-3);
+}
+.sig-box {
+  border: 1px solid var(--line);
+  border-radius: 4px;
+  padding: 4px 12px;
+  text-align: center;
+  min-width: 120px;
+}
+.sig-name { font-size: 9px; text-transform: uppercase; letter-spacing: 0.5px; }
+.sig-line { height: 24px; border-bottom: 1px solid var(--line); margin-bottom: 4px; }
+
+/* ── ADD PAGE BTN ─────────────────────────────── */
+.add-page-row {
+  display: flex; justify-content: center; padding: 8px 0 16px;
+}
+
+/* ── PRINT ───────────────────────────────────── */
+@media print {
+  @page { size: A4; margin: 0; }
+  body { background: #fff; }
+  .app-bar, .top-row, .add-page-row, .photo-clear,
+  .photo-placeholder, .btn, .counter-panel { display: none !important; }
+  .workspace { padding: 0; max-width: 100%; }
+  .pages-container { gap: 0; }
+  .a4-page {
+    box-shadow: none; border-radius: 0;
+    width: 210mm;
+    height: 297mm;
+    overflow: hidden;
+  }
+  .a4-page:not(:last-child) {
+    page-break-after: always;
+    break-after: page;
+  }
+  .a4-inner {
+    padding: 10mm 12mm;
+    height: 297mm;
+    display: flex;
+    flex-direction: column;
+  }
+  .photo-grid {
+    flex: 1;
+    min-height: 0;
+  }
+  .photo-slot {
+    min-height: 0;
+  }
+  .photo-area {
+    background: #f5f5f5;
+    flex: 1;
+    min-height: 80px;
+  }
+  .page-footer {
+    margin-top: 8px;
+    flex-shrink: 0;
+  }
+  .page-header { flex-shrink: 0; }
+  .photo-area img.loaded { display: block !important; }
+  * {
+    -webkit-print-color-adjust: exact;
+    print-color-adjust: exact;
+  }
+}
+
+/* ── RESPONSIVE ─────────────────────────────── */
+@media (max-width: 600px) {
+  .app-bar { height: auto; padding: 10px 14px; flex-wrap: wrap; }
+  .photo-grid { grid-template-columns: 1fr; }
+  .page-header { flex-direction: column; align-items: flex-start; gap: 8px; }
+  .page-header-meta { grid-template-columns: repeat(2, auto); text-align: left; }
+  .a4-inner { padding: 10px 10px; }
+}
+
+/* ── DEFECT STATUS BADGE ─────────────────────── */
+.status-select {
+  appearance: none;
+  font-size: 10px !important;
+  font-weight: 600 !important;
+  padding: 2px 6px !important;
+  border-radius: 3px !important;
+  border: 1.5px solid transparent !important;
+  text-transform: uppercase;
+  letter-spacing: 0.4px;
+  cursor: pointer;
+}
+.status-open { background: #fdf0ef; color: var(--accent); border-color: #f0b8b5 !important; }
+.status-progress { background: #fff8e6; color: #b06a00; border-color: #f0d080 !important; }
+.status-done { background: #edf7ed; color: #2e7d32; border-color: #b2dfb2 !important; }
+
+.slot-status-row {
+  border-top: 1.5px solid var(--line);
+  padding: 5px 8px;
+  display: flex; align-items: center; gap: 6px;
+}
+.slot-status-label { font-size: 9px; font-weight: 600; color: var(--ink-3); text-transform: uppercase; letter-spacing: 0.5px; }
+
+/* ── TOAST ─────────────────────────────────── */
+.toast {
+  position: fixed; bottom: 24px; left: 50%; transform: translateX(-50%);
+  background: var(--header-bg); color: #fff;
+  padding: 10px 20px; border-radius: 20px;
+  font-size: 13px; font-weight: 500;
+  opacity: 0; transition: opacity 0.2s;
+  z-index: 999; pointer-events: none;
+}
+.toast.show { opacity: 1; }
+</style>
+</head>
+<body>
+
+<!-- APP BAR -->
+<div class="app-bar">
+  <div class="app-bar-brand">
+    <div class="app-bar-logo">LHB</div>
+    <div>
+      <div class="app-bar-title">Defect List</div>
+      <div class="app-bar-sub">LHB Construction</div>
+    </div>
+  </div>
+  <div class="app-bar-actions">
+    <button class="btn btn-ghost" onclick="addPage()">＋ Add Page</button>
+    <button class="btn btn-accent" onclick="printAll()">🖨 Print / PDF</button>
+  </div>
+</div>
+
+<!-- WORKSPACE -->
+<div class="workspace">
+
+  <!-- TOP: PROJECT INFO + COUNTER -->
+  <div class="top-row">
+    <div class="panel">
+      <div class="panel-header">
+        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="3" width="18" height="18" rx="2"/><path d="M3 9h18M9 21V9"/></svg>
+        Project Information
+      </div>
+      <div class="panel-body">
+        <div class="form-grid">
+          <div class="form-field" style="grid-column: 1/-1">
+            <label>Project Name</label>
+            <input type="text" id="g-project" placeholder="e.g. Hanuman Estate" oninput="syncHeaders()">
+          </div>
+          <div class="form-field">
+            <label>Block</label>
+            <input type="text" id="g-block" placeholder="e.g. Block A" oninput="syncHeaders()">
+          </div>
+          <div class="form-field">
+            <label>House Type</label>
+            <input type="text" id="g-type" placeholder="e.g. Type B2" oninput="syncHeaders()">
+          </div>
+          <div class="form-field">
+            <label>House No.</label>
+            <input type="text" id="g-house" placeholder="e.g. A-012" oninput="syncHeaders()">
+          </div>
+          <div class="form-field">
+            <label>Inspection Date</label>
+            <input type="date" id="g-date" oninput="syncHeaders()">
+          </div>
+          <div class="form-field">
+            <label>Inspector</label>
+            <input type="text" id="g-inspector" placeholder="Name" oninput="syncHeaders()">
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="counter-panel">
+      <div class="counter-label">Total Defects</div>
+      <div class="counter-val" id="total-count">0</div>
+      <div class="counter-sub">items recorded</div>
+      <div class="pages-label" id="pages-label">1 page · 6 slots</div>
+      <div style="margin-top:12px; display:flex; flex-direction:column; gap:6px;">
+        <div style="display:flex; justify-content:space-between; font-size:12px;">
+          <span style="color:#c0392b; font-weight:600;">● Open</span>
+          <span id="cnt-open" style="font-family:'IBM Plex Mono',monospace; font-weight:600;">0</span>
+        </div>
+        <div style="display:flex; justify-content:space-between; font-size:12px;">
+          <span style="color:#b06a00; font-weight:600;">● In Progress</span>
+          <span id="cnt-progress" style="font-family:'IBM Plex Mono',monospace; font-weight:600;">0</span>
+        </div>
+        <div style="display:flex; justify-content:space-between; font-size:12px;">
+          <span style="color:#2e7d32; font-weight:600;">● Completed</span>
+          <span id="cnt-done" style="font-family:'IBM Plex Mono',monospace; font-weight:600;">0</span>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- PAGES -->
+  <div class="pages-container" id="pages"></div>
+
+  <div class="add-page-row">
+    <button class="btn btn-outline" onclick="addPage()">＋ Add Another Page</button>
+  </div>
+</div>
+
+<div class="toast" id="toast"></div>
+
+<script>
+let pageCount = 0;
+let today = new Date().toISOString().split('T')[0];
+document.getElementById('g-date').value = today;
+
+function showToast(msg) {
+  const t = document.getElementById('toast');
+  t.textContent = msg;
+  t.classList.add('show');
+  setTimeout(() => t.classList.remove('show'), 2000);
+}
+
+function addPage() {
+  pageCount++;
+  const container = document.getElementById('pages');
+  const page = document.createElement('div');
+  page.className = 'a4-page';
+  page.id = 'page-' + pageCount;
+  page.innerHTML = buildPage(pageCount);
+  container.appendChild(page);
+  updateCounters();
+  if (pageCount > 1) showToast('Page ' + pageCount + ' added');
+  // Set today date on new slots
+  page.querySelectorAll('.slot-date').forEach(d => d.value = today);
+  syncHeaders();
+}
+
+function buildPage(pn) {
+  const startNum = (pn - 1) * 6;
+  let slots = '';
+  for (let i = 1; i <= 6; i++) {
+    const n = startNum + i;
+    slots += buildSlot(n, pn, i);
+  }
+  return `
+  <div class="a4-inner">
+    <div class="page-header">
+      <div class="page-header-left">
+        <div class="company-name">LHB Construction · Lavish Home Build</div>
+        <div class="doc-title">Defect List</div>
+      </div>
+      <div class="page-header-meta">
+        <span class="meta-label">Project</span>
+        <span class="meta-val ph-project">—</span>
+        <span class="meta-label">Block</span>
+        <span class="meta-val ph-block">—</span>
+        <span class="meta-label">House Type</span>
+        <span class="meta-val ph-type">—</span>
+        <span class="meta-label">House No.</span>
+        <span class="meta-val ph-house">—</span>
+        <span class="meta-label">Inspector</span>
+        <span class="meta-val ph-inspector">—</span>
+        <span class="meta-label">Date</span>
+        <span class="meta-val ph-date">—</span>
+      </div>
+      <div class="page-badge">Page ${pn}</div>
+    </div>
+
+    <div class="photo-grid">
+      ${slots}
+    </div>
+
+    <div class="page-footer">
+      <div class="sig-box">
+        <div class="sig-line"></div>
+        <div class="sig-name">Inspector Signature</div>
+      </div>
+      <div style="text-align:center; font-family:'IBM Plex Mono',monospace;">
+        Page ${pn}
+      </div>
+      <div class="sig-box">
+        <div class="sig-line"></div>
+        <div class="sig-name">PM / Supervisor Signature</div>
+      </div>
+    </div>
+  </div>`;
+}
+
+function buildSlot(n, pn, i) {
+  return `
+  <div class="photo-slot" id="slot-${n}">
+    <div class="slot-number">#${String(n).padStart(3,'0')}</div>
+    <div class="photo-area" onclick="triggerUpload(${n})" id="photo-area-${n}">
+      <input type="file" accept="image/*" id="file-${n}" onchange="loadPhoto(${n}, event)">
+      <div class="photo-placeholder">
+        <svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5">
+          <rect x="3" y="3" width="18" height="18" rx="2"/>
+          <circle cx="8.5" cy="8.5" r="1.5"/>
+          <polyline points="21,15 16,10 5,21"/>
+        </svg>
+        <span>Tap to add photo</span>
+      </div>
+      <img id="img-${n}" alt="defect photo">
+      <button class="photo-clear" onclick="clearPhoto(event, ${n})">×</button>
+    </div>
+    <div class="slot-meta-full">
+      <div class="slot-meta">
+        <div class="slot-field">
+          <span class="slot-field-label">Floor</span>
+          <select oninput="updateCounters()">
+            <option value="">—</option>
+            <option>Ground Floor</option>
+            <option>1st Floor</option>
+            <option>2nd Floor</option>
+            <option>3rd Floor</option>
+            <option>Roof</option>
+            <option>Basement</option>
+          </select>
+        </div>
+        <div class="slot-field">
+          <span class="slot-field-label">Room / Area</span>
+          <input type="text" placeholder="e.g. Master Bed" oninput="updateCounters()">
+        </div>
+      </div>
+      <div class="slot-desc">
+        <span class="slot-field-label">Description</span>
+        <textarea placeholder="Describe the defect…" rows="2" oninput="updateCounters()"></textarea>
+      </div>
+      <div class="slot-status-row">
+        <span class="slot-status-label">Status</span>
+        <select class="status-select status-open" onchange="onStatusChange(this); updateCounters()">
+          <option value="open">Open</option>
+          <option value="progress">In Progress</option>
+          <option value="done">Completed</option>
+        </select>
+        <span style="font-size:9px; color:var(--ink-3); margin-left:auto;">Ref #${String(n).padStart(3,'0')}</span>
+      </div>
+    </div>
+  </div>`;
+}
+
+function onStatusChange(sel) {
+  sel.className = 'status-select';
+  if (sel.value === 'open') sel.classList.add('status-open');
+  else if (sel.value === 'progress') sel.classList.add('status-progress');
+  else sel.classList.add('status-done');
+}
+
+function triggerUpload(n) {
+  document.getElementById('file-' + n).click();
+}
+
+function loadPhoto(n, e) {
+  const file = e.target.files[0];
+  if (!file) return;
+  const reader = new FileReader();
+  reader.onload = function(ev) {
+    const img = document.getElementById('img-' + n);
+    img.src = ev.target.result;
+    img.classList.add('loaded');
+    const placeholder = document.querySelector('#photo-area-' + n + ' .photo-placeholder');
+    if (placeholder) placeholder.style.display = 'none';
+    updateCounters();
+  };
+  reader.readAsDataURL(file);
+}
+
+function clearPhoto(e, n) {
+  e.stopPropagation();
+  const img = document.getElementById('img-' + n);
+  img.src = '';
+  img.classList.remove('loaded');
+  document.getElementById('file-' + n).value = '';
+  const placeholder = document.querySelector('#photo-area-' + n + ' .photo-placeholder');
+  if (placeholder) placeholder.style.display = '';
+  updateCounters();
+}
+
+function syncHeaders() {
+  const project = document.getElementById('g-project').value || '—';
+  const block   = document.getElementById('g-block').value || '—';
+  const type    = document.getElementById('g-type').value || '—';
+  const house   = document.getElementById('g-house').value || '—';
+  const inspector = document.getElementById('g-inspector').value || '—';
+  const date    = document.getElementById('g-date').value || '—';
+  document.querySelectorAll('.ph-project').forEach(el => el.textContent = project);
+  document.querySelectorAll('.ph-block').forEach(el => el.textContent = block);
+  document.querySelectorAll('.ph-type').forEach(el => el.textContent = type);
+  document.querySelectorAll('.ph-house').forEach(el => el.textContent = house);
+  document.querySelectorAll('.ph-inspector').forEach(el => el.textContent = inspector);
+  document.querySelectorAll('.ph-date').forEach(el => el.textContent = date);
+}
+
+function updateCounters() {
+  // Count filled slots
+  let total = 0, open = 0, progress = 0, done = 0;
+  document.querySelectorAll('.photo-slot').forEach(slot => {
+    const desc = slot.querySelector('textarea');
+    const floor = slot.querySelector('select:not(.status-select)');
+    const hasContent = (desc && desc.value.trim()) || (floor && floor.value);
+    if (hasContent) total++;
+    const status = slot.querySelector('.status-select');
+    if (status) {
+      if (status.value === 'open') open++;
+      else if (status.value === 'progress') progress++;
+      else done++;
+    }
+  });
+  document.getElementById('total-count').textContent = total;
+  document.getElementById('cnt-open').textContent = open;
+  document.getElementById('cnt-progress').textContent = progress;
+  document.getElementById('cnt-done').textContent = done;
+  const n = pageCount;
+  document.getElementById('pages-label').textContent = n + ' page' + (n !== 1 ? 's' : '') + ' · ' + (n * 6) + ' slots';
+}
+
+function printAll() {
+  syncHeaders();
+  window.print();
+}
+
+// Start with 1 page
+addPage();
+</script>
+</body>
+</html>
