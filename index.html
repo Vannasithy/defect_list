@@ -214,11 +214,12 @@ body {
   font-family: 'IBM Plex Mono', monospace;
   padding: 3px 8px;
   letter-spacing: 0.5px;
+  flex-shrink: 0;
 }
 
 .photo-area {
   flex: 1;
-  min-height: 160px;
+  min-height: 180px;
   background: #f0ede8;
   display: flex;
   align-items: center;
@@ -237,11 +238,11 @@ body {
 }
 .photo-area img.loaded { display: block; }
 .photo-placeholder {
-  display: flex; flex-direction: column; align-items: center; gap: 6px;
+  display: flex; flex-direction: column; align-items: center; gap: 4px;
   color: var(--ink-3); user-select: none; pointer-events: none;
 }
 .photo-placeholder svg { opacity: 0.5; }
-.photo-placeholder span { font-size: 11px; font-weight: 500; }
+.photo-placeholder span { font-size: 10px; font-weight: 500; }
 .photo-clear {
   position: absolute; top: 6px; right: 6px;
   background: rgba(0,0,0,0.55); color: #fff;
@@ -253,45 +254,48 @@ body {
 .photo-area:has(img.loaded) .photo-clear { display: flex; align-items: center; justify-content: center; }
 .photo-area input[type=file] { display: none; }
 
+/* Slim meta strip below photo */
 .slot-meta {
-  border-top: 1.5px solid var(--line);
+  border-top: 1px solid var(--line);
   display: grid;
   grid-template-columns: 1fr 1fr;
   gap: 0;
+  flex-shrink: 0;
 }
 .slot-field {
-  padding: 6px 8px;
+  padding: 3px 7px;
   border-right: 1px solid var(--line-light);
-  display: flex; flex-direction: column; gap: 2px;
+  display: flex; flex-direction: column; gap: 1px;
 }
 .slot-field:last-child { border-right: none; }
 .slot-field-label {
-  font-size: 9px; font-weight: 600; color: var(--ink-3);
+  font-size: 8px; font-weight: 600; color: var(--ink-3);
   text-transform: uppercase; letter-spacing: 0.5px;
 }
 .slot-field input, .slot-field select {
   border: none; background: transparent;
-  font-family: inherit; font-size: 12px; color: var(--ink);
+  font-family: inherit; font-size: 11px; color: var(--ink);
   outline: none; padding: 0; width: 100%;
 }
 .slot-field input::placeholder { color: #ccc; }
 
+/* Single-line description */
 .slot-desc {
   border-top: 1px solid var(--line-light);
-  padding: 6px 8px;
-  display: flex; flex-direction: column; gap: 2px;
-  grid-column: 1 / -1;
+  padding: 3px 7px;
+  display: flex; flex-direction: column; gap: 1px;
+  flex-shrink: 0;
 }
-.slot-desc textarea {
+.slot-desc input {
   border: none; background: transparent;
-  font-family: inherit; font-size: 12px; color: var(--ink);
-  outline: none; padding: 0; resize: none; width: 100%;
-  min-height: 38px;
+  font-family: inherit; font-size: 11px; color: var(--ink);
+  outline: none; padding: 0; width: 100%;
 }
-.slot-desc textarea::placeholder { color: #ccc; }
+.slot-desc input::placeholder { color: #ccc; }
 
 .slot-meta-full {
-  border-top: 1.5px solid var(--line);
+  border-top: 1px solid var(--line);
+  flex-shrink: 0;
 }
 
 /* ── PAGE FOOTER ──────────────────────────────── */
@@ -440,11 +444,11 @@ body {
 .status-done { background: #edf7ed; color: #2e7d32; border-color: #b2dfb2 !important; }
 
 .slot-status-row {
-  border-top: 1.5px solid var(--line);
-  padding: 5px 8px;
+  border-top: 1px solid var(--line-light);
+  padding: 3px 7px;
   display: flex; align-items: center; gap: 6px;
 }
-.slot-status-label { font-size: 9px; font-weight: 600; color: var(--ink-3); text-transform: uppercase; letter-spacing: 0.5px; }
+.slot-status-label { font-size: 8px; font-weight: 600; color: var(--ink-3); text-transform: uppercase; letter-spacing: 0.5px; }
 
 /* ── TOAST ─────────────────────────────────── */
 .toast {
@@ -682,7 +686,7 @@ function buildSlot(n, pn, i) {
       </div>
       <div class="slot-desc">
         <span class="slot-field-label">Description</span>
-        <textarea placeholder="Describe the defect…" rows="2" oninput="updateCounters()"></textarea>
+        <input type="text" placeholder="Describe the defect…" oninput="updateCounters()">
       </div>
       <div class="slot-status-row">
         <span class="slot-status-label">Status</span>
@@ -753,7 +757,7 @@ function updateCounters() {
   // Count filled slots
   let total = 0, open = 0, progress = 0, done = 0;
   document.querySelectorAll('.photo-slot').forEach(slot => {
-    const desc = slot.querySelector('textarea');
+    const desc = slot.querySelector('.slot-desc input');
     const floor = slot.querySelector('select:not(.status-select)');
     const hasContent = (desc && desc.value.trim()) || (floor && floor.value);
     if (hasContent) total++;
