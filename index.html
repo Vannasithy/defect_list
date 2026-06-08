@@ -4,7 +4,7 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0">
 <title>Defect List – LHB Construction</title>
-<link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans:wght@400;500;600&family=IBM+Plex+Mono:wght@400;500&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans:wght@400;500;600&family=IBM+Plex+Mono:wght@400;500&family=Hanuman:wght@400;700&display=swap" rel="stylesheet">
 <style>
 :root {
   --ink: #1a1a1a;
@@ -27,6 +27,36 @@ body {
   background: var(--bg);
   color: var(--ink);
   min-height: 100vh;
+}
+/* Khmer sub-label */
+.kh {
+  font-family: 'Hanuman', serif;
+  font-size: 8.5px;
+  color: var(--ink-3);
+  display: block;
+  line-height: 1.2;
+  margin-top: 0px;
+}
+.kh-inline {
+  font-family: 'Hanuman', serif;
+  font-size: 9px;
+  color: var(--ink-3);
+  margin-left: 3px;
+}
+/* Bilingual label: English bold + Khmer below */
+.bilabel {
+  display: flex;
+  flex-direction: column;
+  gap: 0px;
+  line-height: 1.1;
+}
+.bilabel .en {
+  font-size: 8px; font-weight: 600; color: var(--ink-3);
+  text-transform: uppercase; letter-spacing: 0.5px;
+}
+.bilabel .km {
+  font-family: 'Hanuman', serif;
+  font-size: 9px; color: var(--ink-3);
 }
 
 /* ── APP SHELL ─────────────────────────────────── */
@@ -269,8 +299,9 @@ body {
 }
 .slot-field:last-child { border-right: none; }
 .slot-field-label {
-  font-size: 8px; font-weight: 600; color: var(--ink-3);
-  text-transform: uppercase; letter-spacing: 0.5px;
+  display: flex;
+  flex-direction: column;
+  gap: 0;
 }
 .slot-field input, .slot-field select {
   border: none; background: transparent;
@@ -469,12 +500,12 @@ body {
   <div class="app-bar-brand">
     <div class="app-bar-logo">LHB</div>
     <div>
-      <div class="app-bar-title">Defect List</div>
-      <div class="app-bar-sub">LHB Construction</div>
+      <div class="app-bar-title">Defect List <span style="font-family:'Hanuman',serif;font-size:13px;color:#ccc;">បញ្ជីកែការងារ</span></div>
+      <div class="app-bar-sub">LHB Construction · ឡិលអេចប៊ី</div>
     </div>
   </div>
   <div class="app-bar-actions">
-    <button class="btn btn-ghost" onclick="addPage()">＋ Add Page</button>
+    <button class="btn btn-ghost" onclick="addPage()">＋ Add Page <span style="font-family:'Hanuman',serif;font-size:11px;opacity:0.8;">បន្ថែមទំព័រ</span></button>
     <button class="btn btn-accent" onclick="printAll()">🖨 Print / PDF</button>
   </div>
 </div>
@@ -487,54 +518,54 @@ body {
     <div class="panel">
       <div class="panel-header">
         <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="3" width="18" height="18" rx="2"/><path d="M3 9h18M9 21V9"/></svg>
-        Project Information
+        Project Information <span style="font-family:'Hanuman',serif;font-size:12px;font-weight:400;opacity:0.85;margin-left:6px;">ព័ត៌មានគម្រោង</span>
       </div>
       <div class="panel-body">
         <div class="form-grid">
           <div class="form-field" style="grid-column: 1/-1">
-            <label>Project Name</label>
+            <label>Project Name <span class="kh-inline">ឈ្មោះគម្រោង</span></label>
             <input type="text" id="g-project" placeholder="e.g. Hanuman Estate" oninput="syncHeaders()">
           </div>
           <div class="form-field">
-            <label>Block</label>
+            <label>Block <span class="kh-inline">ប្លុក</span></label>
             <input type="text" id="g-block" placeholder="e.g. Block A" oninput="syncHeaders()">
           </div>
           <div class="form-field">
-            <label>House Type</label>
+            <label>House Type <span class="kh-inline">ប្រភេទផ្ទះ</span></label>
             <input type="text" id="g-type" placeholder="e.g. Type B2" oninput="syncHeaders()">
           </div>
           <div class="form-field">
-            <label>House No.</label>
+            <label>House No. <span class="kh-inline">លេខផ្ទះ</span></label>
             <input type="text" id="g-house" placeholder="e.g. A-012" oninput="syncHeaders()">
           </div>
           <div class="form-field">
-            <label>Inspection Date</label>
+            <label>Inspection Date <span class="kh-inline">កាលបរិច្ឆេទត្រួតពិនិត្យ</span></label>
             <input type="date" id="g-date" oninput="syncHeaders()">
           </div>
           <div class="form-field">
-            <label>Inspector</label>
-            <input type="text" id="g-inspector" placeholder="Name" oninput="syncHeaders()">
+            <label>Inspector <span class="kh-inline">អ្នកត្រួតពិនិត្យ</span></label>
+            <input type="text" id="g-inspector" placeholder="Name / ឈ្មោះ" oninput="syncHeaders()">
           </div>
         </div>
       </div>
     </div>
 
     <div class="counter-panel">
-      <div class="counter-label">Total Defects</div>
+      <div class="counter-label">Total Defects <span class="kh" style="display:inline;font-size:9px;">ចំនួនបញ្ហា</span></div>
       <div class="counter-val" id="total-count">0</div>
-      <div class="counter-sub">items recorded</div>
+      <div class="counter-sub">items recorded · <span style="font-family:'Hanuman',serif;">ចំណុចដែលបានកត់ត្រា</span></div>
       <div class="pages-label" id="pages-label">1 page · 6 slots</div>
       <div style="margin-top:12px; display:flex; flex-direction:column; gap:6px;">
         <div style="display:flex; justify-content:space-between; font-size:12px;">
-          <span style="color:#c0392b; font-weight:600;">● Open</span>
+          <span style="color:#c0392b; font-weight:600;">● Open <span style="font-family:'Hanuman',serif;font-weight:400;">កំពុងរង់ចាំ</span></span>
           <span id="cnt-open" style="font-family:'IBM Plex Mono',monospace; font-weight:600;">0</span>
         </div>
         <div style="display:flex; justify-content:space-between; font-size:12px;">
-          <span style="color:#b06a00; font-weight:600;">● In Progress</span>
+          <span style="color:#b06a00; font-weight:600;">● In Progress <span style="font-family:'Hanuman',serif;font-weight:400;">កំពុងដំណើរការ</span></span>
           <span id="cnt-progress" style="font-family:'IBM Plex Mono',monospace; font-weight:600;">0</span>
         </div>
         <div style="display:flex; justify-content:space-between; font-size:12px;">
-          <span style="color:#2e7d32; font-weight:600;">● Completed</span>
+          <span style="color:#2e7d32; font-weight:600;">● Completed <span style="font-family:'Hanuman',serif;font-weight:400;">បានបញ្ចប់</span></span>
           <span id="cnt-done" style="font-family:'IBM Plex Mono',monospace; font-weight:600;">0</span>
         </div>
       </div>
@@ -545,7 +576,7 @@ body {
   <div class="pages-container" id="pages"></div>
 
   <div class="add-page-row">
-    <button class="btn btn-outline" onclick="addPage()">＋ Add Another Page</button>
+    <button class="btn btn-outline" onclick="addPage()">＋ Add Another Page <span style="font-family:'Hanuman',serif;font-size:12px;">បន្ថែមទំព័រថ្មី</span></button>
   </div>
 </div>
 
@@ -554,18 +585,20 @@ body {
 <!-- Print tip modal for mobile -->
 <div id="print-tip" style="display:none; position:fixed; inset:0; background:rgba(0,0,0,0.55); z-index:200; align-items:center; justify-content:center; padding:20px;">
   <div style="background:#fff; border-radius:12px; padding:24px; max-width:360px; width:100%;">
-    <div style="font-size:15px; font-weight:600; margin-bottom:8px;">📱 Print Tips for Mobile</div>
+    <div style="font-size:15px; font-weight:600; margin-bottom:4px;">📱 Print Tips for Mobile</div>
+    <div style="font-family:'Hanuman',serif; font-size:13px; color:#888; margin-bottom:10px;">គន្លឹះសម្រាប់ការបោះពុម្ព</div>
     <div style="font-size:13px; color:#444; line-height:1.7; margin-bottom:16px;">
       For a clean A4 PDF on smartphone:<br>
-      1. Tap <strong>Share</strong> → <strong>Print</strong> (iOS) or tap <strong>⋮ Menu</strong> → <strong>Print</strong> (Android)<br>
-      2. Set <strong>Paper size: A4</strong><br>
-      3. Set <strong>Margins: None</strong><br>
-      4. <strong>Disable</strong> "Headers and footers"<br>
-      5. Save as PDF
+      <span style="font-family:'Hanuman',serif;font-size:12px;color:#666;">សម្រាប់ PDF ត្រឹមត្រូវលើទូរស័ព្ទ៖</span><br>
+      1. Tap <strong>Share</strong> → <strong>Print</strong> (iOS) or <strong>⋮ Menu</strong> → <strong>Print</strong> (Android)<br>
+      2. Set <strong>Paper size: A4</strong> · <span style="font-family:'Hanuman',serif;font-size:12px;">ទំហំក្រដាស A4</span><br>
+      3. Set <strong>Margins: None</strong> · <span style="font-family:'Hanuman',serif;font-size:12px;">គ្មានរឹម</span><br>
+      4. <strong>Disable</strong> "Headers and footers" · <span style="font-family:'Hanuman',serif;font-size:12px;">បិទ​បឋមកថា</span><br>
+      5. Save as PDF · <span style="font-family:'Hanuman',serif;font-size:12px;">រក្សាទុកជា PDF</span>
     </div>
     <div style="display:flex; gap:10px;">
-      <button onclick="document.getElementById('print-tip').style.display='none'; window.print();" style="flex:1; background:#c0392b; color:#fff; border:none; border-radius:6px; padding:10px; font-size:13px; font-weight:600; cursor:pointer;">Print Now</button>
-      <button onclick="document.getElementById('print-tip').style.display='none';" style="flex:1; background:#f0ede8; color:#333; border:none; border-radius:6px; padding:10px; font-size:13px; font-weight:600; cursor:pointer;">Cancel</button>
+      <button onclick="document.getElementById('print-tip').style.display='none'; window.print();" style="flex:1; background:#c0392b; color:#fff; border:none; border-radius:6px; padding:10px; font-size:13px; font-weight:600; cursor:pointer;">Print Now · <span style="font-family:'Hanuman',serif;font-weight:400;">បោះពុម្ព</span></button>
+      <button onclick="document.getElementById('print-tip').style.display='none';" style="flex:1; background:#f0ede8; color:#333; border:none; border-radius:6px; padding:10px; font-size:13px; font-weight:600; cursor:pointer;">Cancel · <span style="font-family:'Hanuman',serif;font-weight:400;">បោះបង់</span></button>
     </div>
   </div>
 </div>
@@ -608,21 +641,21 @@ function buildPage(pn) {
   <div class="a4-inner">
     <div class="page-header">
       <div class="page-header-left">
-        <div class="company-name">LHB Construction · Lavish Home Build</div>
-        <div class="doc-title">Defect List</div>
+        <div class="company-name">LHB Construction · Lavish Home Build · <span style="font-family:'Hanuman',serif;text-transform:none;letter-spacing:0;">អិលអេចប៊ី</span></div>
+        <div class="doc-title">Defect List <span style="font-family:'Hanuman',serif;font-size:16px;color:#c0392b;letter-spacing:0;">បញ្ជីការងារកែ</span></div>
       </div>
       <div class="page-header-meta">
-        <span class="meta-label">Project</span>
+        <span class="meta-label">Project <span style="font-family:'Hanuman',serif;text-transform:none;font-weight:400;font-size:9px;">គម្រោង</span></span>
         <span class="meta-val ph-project">—</span>
-        <span class="meta-label">Block</span>
+        <span class="meta-label">Block <span style="font-family:'Hanuman',serif;text-transform:none;font-weight:400;font-size:9px;">ប្លុក</span></span>
         <span class="meta-val ph-block">—</span>
-        <span class="meta-label">House Type</span>
+        <span class="meta-label">House Type <span style="font-family:'Hanuman',serif;text-transform:none;font-weight:400;font-size:9px;">ប្រភេទផ្ទះ</span></span>
         <span class="meta-val ph-type">—</span>
-        <span class="meta-label">House No.</span>
+        <span class="meta-label">House No. <span style="font-family:'Hanuman',serif;text-transform:none;font-weight:400;font-size:9px;">លេខផ្ទះ</span></span>
         <span class="meta-val ph-house">—</span>
-        <span class="meta-label">Inspector</span>
+        <span class="meta-label">Inspector <span style="font-family:'Hanuman',serif;text-transform:none;font-weight:400;font-size:9px;">អ្នកត្រួតពិនិត្យ</span></span>
         <span class="meta-val ph-inspector">—</span>
-        <span class="meta-label">Date</span>
+        <span class="meta-label">Date <span style="font-family:'Hanuman',serif;text-transform:none;font-weight:400;font-size:9px;">កាលបរិច្ឆេទ</span></span>
         <span class="meta-val ph-date">—</span>
       </div>
       <div class="page-badge">Page ${pn}</div>
@@ -635,14 +668,14 @@ function buildPage(pn) {
     <div class="page-footer">
       <div class="sig-box">
         <div class="sig-line"></div>
-        <div class="sig-name">Inspector Signature</div>
+        <div class="sig-name">Inspector Signature <span style="font-family:'Hanuman',serif;font-size:8px;text-transform:none;display:block;margin-top:1px;">ហត្ថលេខាអ្នកត្រួតពិនិត្យ</span></div>
       </div>
-      <div style="text-align:center; font-family:'IBM Plex Mono',monospace;">
+      <div style="text-align:center; font-family:'IBM Plex Mono',monospace; font-size:10px;">
         Page ${pn}
       </div>
       <div class="sig-box">
         <div class="sig-line"></div>
-        <div class="sig-name">PM / Supervisor Signature</div>
+        <div class="sig-name">PM / Supervisor Signature <span style="font-family:'Hanuman',serif;font-size:8px;text-transform:none;display:block;margin-top:1px;">ហត្ថលេខាប្រធានគម្រោង</span></div>
       </div>
     </div>
   </div>`;
@@ -660,7 +693,7 @@ function buildSlot(n, pn, i) {
           <circle cx="8.5" cy="8.5" r="1.5"/>
           <polyline points="21,15 16,10 5,21"/>
         </svg>
-        <span>Tap to add photo</span>
+        <span>Tap to add photo · <span style="font-family:'Hanuman',serif;">ចុចដើម្បីបន្ថែមរូបភាព</span></span>
       </div>
       <img id="img-${n}" alt="defect photo">
       <button class="photo-clear" onclick="clearPhoto(event, ${n})">×</button>
@@ -668,32 +701,32 @@ function buildSlot(n, pn, i) {
     <div class="slot-meta-full">
       <div class="slot-meta">
         <div class="slot-field">
-          <span class="slot-field-label">Floor</span>
+          <span class="slot-field-label bilabel"><span class="en">Floor</span><span class="km">ជាន់</span></span>
           <select oninput="updateCounters()">
             <option value="">—</option>
-            <option>Ground Floor</option>
-            <option>1st Floor</option>
-            <option>2nd Floor</option>
-            <option>3rd Floor</option>
-            <option>Roof</option>
-            <option>Basement</option>
+            <option>Ground Floor · មូលដ្ឋាន</option>
+            <option>1st Floor · ជាន់ទី១</option>
+            <option>2nd Floor · ជាន់ទី២</option>
+            <option>3rd Floor · ជាន់ទី៣</option>
+            <option>Roof · ដំបូល</option>
+            <option>Basement · កន្លែងក្រោម</option>
           </select>
         </div>
         <div class="slot-field">
-          <span class="slot-field-label">Room / Area</span>
-          <input type="text" placeholder="e.g. Master Bed" oninput="updateCounters()">
+          <span class="slot-field-label bilabel"><span class="en">Room / Area</span><span class="km">បន្ទប់ / តំបន់</span></span>
+          <input type="text" placeholder="e.g. Master Bed / បន្ទប់គេង" oninput="updateCounters()">
         </div>
       </div>
       <div class="slot-desc">
-        <span class="slot-field-label">Description</span>
-        <input type="text" placeholder="Describe the defect…" oninput="updateCounters()">
+        <span class="slot-field-label bilabel"><span class="en">Description</span><span class="km">ការពិពណ៌នា</span></span>
+        <input type="text" placeholder="Describe the defect… / ពណ៌នាពីបញ្ហា…" oninput="updateCounters()">
       </div>
       <div class="slot-status-row">
-        <span class="slot-status-label">Status</span>
+        <span class="slot-status-label">Status <span style="font-family:'Hanuman',serif;font-size:8px;font-weight:400;">ស្ថានភាព</span></span>
         <select class="status-select status-open" onchange="onStatusChange(this); updateCounters()">
-          <option value="open">Open</option>
-          <option value="progress">In Progress</option>
-          <option value="done">Completed</option>
+          <option value="open">Open · បើក</option>
+          <option value="progress">In Progress · កំពុងដំណើរការ</option>
+          <option value="done">Completed · បានបញ្ចប់</option>
         </select>
         <span style="font-size:9px; color:var(--ink-3); margin-left:auto;">Ref #${String(n).padStart(3,'0')}</span>
       </div>
