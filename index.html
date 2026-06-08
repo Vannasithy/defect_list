@@ -175,17 +175,17 @@ body {
 /* A4: 210mm × 297mm. At 96dpi: 794 × 1123px */
 .a4-inner {
   width: 100%;
-  padding: 14mm 12mm;
+  padding: 6mm 10mm 5mm 10mm;
   display: flex;
   flex-direction: column;
 }
 .a4-inner .photo-grid { flex: 1; }
-.a4-inner .page-footer { flex-shrink: 0; margin-top: auto; padding-top: 10px; }
+.a4-inner .page-footer { flex-shrink: 0; margin-top: auto; padding-top: 6px; }
 
 .page-header {
   border-bottom: 3px solid var(--header-bg);
-  padding-bottom: 10px;
-  margin-bottom: 14px;
+  padding-bottom: 6px;
+  margin-bottom: 8px;
   display: flex;
   justify-content: space-between;
   align-items: flex-end;
@@ -223,7 +223,7 @@ body {
 .photo-grid {
   display: grid;
   grid-template-columns: 1fr 1fr;
-  gap: 10px;
+  gap: 6px;
 }
 
 .photo-slot {
@@ -390,7 +390,7 @@ body {
   .a4-inner {
     width: 210mm !important;
     height: 297mm !important;
-    padding: 8mm 10mm !important;
+    padding: 6mm 10mm 5mm 10mm !important;
     display: flex !important;
     flex-direction: column !important;
     box-sizing: border-box !important;
@@ -461,25 +461,29 @@ body {
 /* ── DEFECT STATUS BADGE ─────────────────────── */
 .status-select {
   appearance: none;
-  font-size: 10px !important;
-  font-weight: 600 !important;
-  padding: 2px 6px !important;
+  -webkit-appearance: none;
+  font-family: 'Hanuman', serif;
+  font-size: 9px !important;
+  font-weight: 700 !important;
+  padding: 1px 5px !important;
   border-radius: 3px !important;
-  border: 1.5px solid transparent !important;
-  text-transform: uppercase;
-  letter-spacing: 0.4px;
+  border: none !important;
+  outline: none !important;
+  box-shadow: none !important;
   cursor: pointer;
+  letter-spacing: 0.2px;
 }
-.status-open { background: #fdf0ef; color: var(--accent); border-color: #f0b8b5 !important; }
-.status-progress { background: #fff8e6; color: #b06a00; border-color: #f0d080 !important; }
-.status-done { background: #edf7ed; color: #2e7d32; border-color: #b2dfb2 !important; }
+.status-open { background: #fde8e7; color: #a93226; }
+.status-progress { background: #fff3cd; color: #8a5700; }
+.status-done { background: #e6f4ea; color: #2e7d32; }
 
 .slot-status-row {
   border-top: 1px solid var(--line-light);
-  padding: 3px 7px;
-  display: flex; align-items: center; gap: 6px;
+  padding: 2px 7px;
+  display: flex; align-items: center; gap: 5px;
+  background: #fafafa;
 }
-.slot-status-label { font-size: 8px; font-weight: 600; color: var(--ink-3); text-transform: uppercase; letter-spacing: 0.5px; }
+.slot-status-label { font-size: 8px; font-weight: 600; color: var(--ink-3); text-transform: uppercase; letter-spacing: 0.4px; }
 
 /* ── TOAST ─────────────────────────────────── */
 .toast {
@@ -501,7 +505,7 @@ body {
     <div class="app-bar-logo">LHB</div>
     <div>
       <div class="app-bar-title">Defect List <span style="font-family:'Hanuman',serif;font-size:13px;color:#ccc;">បញ្ជីកែការងារ</span></div>
-      <div class="app-bar-sub">LHB Construction · ឡិលអេចប៊ី</div>
+      <div class="app-bar-sub">LHB Construction · លាវីស ហូម ប៊ីល</div>
     </div>
   </div>
   <div class="app-bar-actions">
@@ -641,8 +645,8 @@ function buildPage(pn) {
   <div class="a4-inner">
     <div class="page-header">
       <div class="page-header-left">
-        <div class="company-name">LHB Construction · Lavish Home Build · <span style="font-family:'Hanuman',serif;text-transform:none;letter-spacing:0;">អិលអេចប៊ី</span></div>
-        <div class="doc-title">Defect List <span style="font-family:'Hanuman',serif;font-size:16px;color:#c0392b;letter-spacing:0;">បញ្ជីការងារកែ</span></div>
+        <div class="company-name">LHB Construction · Lavish Home Build · <span style="font-family:'Hanuman',serif;text-transform:none;letter-spacing:0;">លាវីស ហូម ប៊ីល</span></div>
+        <div class="doc-title">Defect List <span style="font-family:'Hanuman',serif;font-size:16px;color:#c0392b;letter-spacing:0;">បញ្ជីកែការងារ</span></div>
       </div>
       <div class="page-header-meta">
         <span class="meta-label">Project <span style="font-family:'Hanuman',serif;text-transform:none;font-weight:400;font-size:9px;">គម្រោង</span></span>
