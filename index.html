@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
 <meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0">
 <title>Defect List – LHB Construction</title>
 <link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans:wght@400;500;600&family=IBM+Plex+Mono:wght@400;500&display=swap" rel="stylesheet">
 <style>
@@ -322,49 +322,95 @@ body {
 
 /* ── PRINT ───────────────────────────────────── */
 @media print {
-  @page { size: A4; margin: 0; }
-  body { background: #fff; }
+  /* Force A4, zero margins — suppresses browser URL/date headers */
+  @page {
+    size: 210mm 297mm;
+    margin: 0mm;
+  }
+
+  /* Kill everything except the pages */
+  body { background: #fff !important; margin: 0 !important; padding: 0 !important; }
   .app-bar, .top-row, .add-page-row, .photo-clear,
   .photo-placeholder, .btn, .counter-panel { display: none !important; }
-  .workspace { padding: 0; max-width: 100%; }
-  .pages-container { gap: 0; }
+  .workspace { padding: 0 !important; max-width: none !important; width: 210mm !important; margin: 0 !important; }
+  .pages-container { gap: 0 !important; display: block !important; }
+
+  /* Each page = exactly one A4 sheet */
   .a4-page {
-    box-shadow: none; border-radius: 0;
-    width: 210mm;
-    height: 297mm;
-    overflow: hidden;
+    box-shadow: none !important;
+    border-radius: 0 !important;
+    background: #fff !important;
+    width: 210mm !important;
+    height: 297mm !important;
+    overflow: hidden !important;
+    display: block !important;
+    position: relative !important;
   }
   .a4-page:not(:last-child) {
     page-break-after: always;
     break-after: page;
   }
+
+  /* Inner: flex column so footer stays at bottom */
   .a4-inner {
-    padding: 10mm 12mm;
-    height: 297mm;
-    display: flex;
-    flex-direction: column;
+    width: 210mm !important;
+    height: 297mm !important;
+    padding: 8mm 10mm !important;
+    display: flex !important;
+    flex-direction: column !important;
+    box-sizing: border-box !important;
   }
+
+  /* Header: fixed size */
+  .page-header {
+    flex-shrink: 0 !important;
+    margin-bottom: 6px !important;
+    padding-bottom: 6px !important;
+  }
+  .page-header-meta {
+    grid-template-columns: repeat(4, auto) !important;
+    text-align: right !important;
+  }
+
+  /* Grid: stretches between header and footer */
   .photo-grid {
-    flex: 1;
-    min-height: 0;
+    flex: 1 !important;
+    min-height: 0 !important;
+    display: grid !important;
+    grid-template-columns: 1fr 1fr !important;
+    gap: 6px !important;
+    overflow: hidden !important;
   }
+
+  /* Slots */
   .photo-slot {
-    min-height: 0;
+    display: flex !important;
+    flex-direction: column !important;
+    min-height: 0 !important;
+    overflow: hidden !important;
+    border: 1px solid #ccc !important;
   }
   .photo-area {
-    background: #f5f5f5;
-    flex: 1;
-    min-height: 80px;
+    flex: 1 !important;
+    min-height: 0 !important;
+    background: #f5f5f5 !important;
+    overflow: hidden !important;
   }
+  .photo-area img { display: none !important; }
+  .photo-area img.loaded { display: block !important; width: 100% !important; height: 100% !important; object-fit: cover !important; }
+  .slot-meta-full { flex-shrink: 0 !important; }
+
+  /* Footer: pinned to bottom */
   .page-footer {
-    margin-top: 8px;
-    flex-shrink: 0;
+    flex-shrink: 0 !important;
+    margin-top: 6px !important;
+    padding-top: 6px !important;
   }
-  .page-header { flex-shrink: 0; }
-  .photo-area img.loaded { display: block !important; }
+
+  /* Color accuracy */
   * {
-    -webkit-print-color-adjust: exact;
-    print-color-adjust: exact;
+    -webkit-print-color-adjust: exact !important;
+    print-color-adjust: exact !important;
   }
 }
 
@@ -500,6 +546,25 @@ body {
 </div>
 
 <div class="toast" id="toast"></div>
+
+<!-- Print tip modal for mobile -->
+<div id="print-tip" style="display:none; position:fixed; inset:0; background:rgba(0,0,0,0.55); z-index:200; align-items:center; justify-content:center; padding:20px;">
+  <div style="background:#fff; border-radius:12px; padding:24px; max-width:360px; width:100%;">
+    <div style="font-size:15px; font-weight:600; margin-bottom:8px;">📱 Print Tips for Mobile</div>
+    <div style="font-size:13px; color:#444; line-height:1.7; margin-bottom:16px;">
+      For a clean A4 PDF on smartphone:<br>
+      1. Tap <strong>Share</strong> → <strong>Print</strong> (iOS) or tap <strong>⋮ Menu</strong> → <strong>Print</strong> (Android)<br>
+      2. Set <strong>Paper size: A4</strong><br>
+      3. Set <strong>Margins: None</strong><br>
+      4. <strong>Disable</strong> "Headers and footers"<br>
+      5. Save as PDF
+    </div>
+    <div style="display:flex; gap:10px;">
+      <button onclick="document.getElementById('print-tip').style.display='none'; window.print();" style="flex:1; background:#c0392b; color:#fff; border:none; border-radius:6px; padding:10px; font-size:13px; font-weight:600; cursor:pointer;">Print Now</button>
+      <button onclick="document.getElementById('print-tip').style.display='none';" style="flex:1; background:#f0ede8; color:#333; border:none; border-radius:6px; padding:10px; font-size:13px; font-weight:600; cursor:pointer;">Cancel</button>
+    </div>
+  </div>
+</div>
 
 <script>
 let pageCount = 0;
@@ -709,7 +774,12 @@ function updateCounters() {
 
 function printAll() {
   syncHeaders();
-  window.print();
+  const isMobile = /Mobi|Android|iPhone|iPad/i.test(navigator.userAgent);
+  if (isMobile) {
+    document.getElementById('print-tip').style.display = 'flex';
+  } else {
+    window.print();
+  }
 }
 
 // Start with 1 page
